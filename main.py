@@ -3,7 +3,7 @@
 
 # configurações da interface
 _width = 60
-_heigth = 20
+_heigth = 25
 centerX = _width/2
 centerY = _heigth/2
 
@@ -27,7 +27,14 @@ for _i in range(_heigth):
     for _ in range(_width):
         _arrglobal[_i].append(0)
 
+rows = len(_arrglobal)
+cols = len(_arrglobal[0]) if rows else 0
+
 # ----------------------------------------
+def limit(x, y, v):
+    """Calcula os limites."""
+    if 0 <= x < rows and 0 <= y < cols:
+        _arrglobal[x][y] = v
 
 # Renderizar
 def render():
@@ -56,27 +63,28 @@ def unirtabelas1(arr1, arr2):
 def rect(x, y, h, w):
     """Desenha uma caixa"""
     x, y, h, w = int(x), int(y), int(h), int(w)
-    for i in range(len(_arrglobal)):
-        if i < len(_arrglobal):
-            for a in range(w+1):
-                if a < len(_arrglobal[i]) and y < len(_arrglobal):
-                    if y < len(_arrglobal) and a+x < len(_arrglobal[i]):
-                        _arrglobal[y][a+x] = 2
-                    if y+h < len(_arrglobal) and a+x < len(_arrglobal[i]):
-                        _arrglobal[y+h][a+x] = 3
-
-            for b in range(h):
-                if i > y and i < y+h:
-                    if x < len(_arrglobal[i]):
-                        _arrglobal[i][x] = 1
-                    if x+w < len(_arrglobal[i]):
-                        _arrglobal[i][x + w] = 1
+    for c in range(x, x + w + 1):
+        limit(y, c, 2)
+        limit(y + h, c, 2)
+  
+      # bordas verticais (laterais)
+    for r in range(y + 1, y + h):
+        limit(r, x, 1)
+        limit(r, x + w, 1)
 
 def text(x,y, t):
     """Desenha um texto"""
     x, y, t, lenTex = int(x), int(y), str(t), len(t)
     for a in range(lenTex):
         _arrglobal[y][x+a-lenTex] = t[a]
+
+def line(x1,y1,x2,y2):
+    """Desenha uma uma linha, (x1, y1) ponto de início, (x2, y2) ponto final."""
+    x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+    for i in range(y1, y2):
+        t = i / (rows - 1)          # 0 -> 1
+        x = round(x1 + (x2 + x1) * t) # interpolação linear
+        limit(i,x, 4)
 
 # Exemplo
 # X Y W H
@@ -88,6 +96,9 @@ text(52,1, "Sobre")
 
 rect(2, centerY-5, 10, 55)
 text(centerX+3,centerY, "lujs.dev")
+
+line(3, 3, 40, 7)
+line(30, 3, 40, 7)
 
 # Renderizar
 render()
