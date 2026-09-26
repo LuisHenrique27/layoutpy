@@ -99,6 +99,6 @@ text(centerX+3,centerY, "lujs.dev")
 
 line(3, 3, 40, 7)
 line(30, 3, 40, 7)
-
+line(23, 3, 40, 7)
 # Renderizar
 render()
